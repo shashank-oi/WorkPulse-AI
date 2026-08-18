@@ -1,0 +1,87 @@
+# WorkPulse AI backend configuration.
+# Everything is overridable through environment variables — see README.md.
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: workpulse-backend
+
+  # The backend runs on PostgreSQL by default.
+  profiles:
+    active: postgres
+
+  jackson:
+    default-property-inclusion: non_null
+
+  # Email / SMTP configuration
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  jwt-secret: ${JWT_SECRET:workpulse-dev-secret-change-me-in-production-please-32chars}
+  jwt-expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  cors-origins: ${CORS_ORIGINS:*}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  seed-demo: ${SEED_DEMO:true}
+
+---
+# Default "dev" profile: in-memory H2, zero setup.
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:workpulse;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+
+---
+# PostgreSQL profile
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/workpulse}
+    username: ${DB_USER:workpulse}
+    password: ${DB_PASSWORD:workpulse}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+---
+# MySQL profile
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/workpulse?createDatabaseIfNotExist=true}
+    username: ${DB_USER:workpulse}
+    password: ${DB_PASSWORD:workpulse}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false

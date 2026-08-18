@@ -1,0 +1,15 @@
+.env.local
+.env
+node_modules/
+dist/
+src/convex/_generated/
+
+backend/target/
+*.class
+
+.idea/
+.vscode/
+*.iml
+
+backend/.env
+backend/.evn
